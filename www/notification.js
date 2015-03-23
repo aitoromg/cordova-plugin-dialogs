@@ -36,10 +36,10 @@ module.exports = {
      * @param {String} title                Title of the alert dialog (default: Alert)
      * @param {String} buttonLabel          Label of the close button (default: OK)
      */
-    alert: function(message, completeCallback, title, buttonLabel) {
+    alert: function(message, completeCallback, title, buttonLabel, timeout) {
         var _title = (title || "Alert");
         var _buttonLabel = (buttonLabel || "OK");
-        exec(completeCallback, null, "Notification", "alert", [message, _title, _buttonLabel]);
+        exec(completeCallback, null, "Notification", "alert", [message, _title, _buttonLabel, timeout]);
     },
 
     /**
