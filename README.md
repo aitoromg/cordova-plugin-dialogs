@@ -58,6 +58,7 @@ function, which is typically less customizable.
 
 - __buttonName__: Button name. _(String)_ (Optional, defaults to `OK`)
 
+- __timeout__: Timeout in seconds to dismiss alert. _(Number)_ (Optional, Defaults: don't dismiss)
 
 ### Example
 
@@ -69,7 +70,8 @@ function, which is typically less customizable.
         'You are the winner!',  // message
         alertDismissed,         // callback
         'Game Over',            // title
-        'Done'                  // buttonName
+        'Done',                 // buttonName
+        5                       // timeout
     );
 
 ### Supported Platforms
