@@ -36,7 +36,7 @@ static void soundCompletionCallback(SystemSoundID ssid, void* data);
  *  callbackId    The commmand callback id.
  *  dialogType    The type of alert view [alert | prompt].
  */
-- (void)showDialogWithMessage:(NSString*)message title:(NSString*)title buttons:(NSArray*)buttons defaultText:(NSString*)defaultText callbackId:(NSString*)callbackId dialogType:(NSString*)dialogType
+- (void)showDialogWithMessage:(NSString*)message title:(NSString*)title buttons:(NSArray*)buttons defaultText:(NSString*)defaultText callbackId:(NSString*)callbackId dialogType:(NSString*)dialogType dismissAfter:(NSTimeInterval)timeout
 {
     CDVAlertView* alertView = [[CDVAlertView alloc]
         initWithTitle:title
@@ -60,6 +60,13 @@ static void soundCompletionCallback(SystemSoundID ssid, void* data);
     }
 
     [alertView show];
+    
+    if(timeout){
+        [self performSelector:@selector(dismissAlert:)
+                   withObject:alertView
+                   afterDelay:timeout
+         ];
+    }
 }
 
 - (void)alert:(CDVInvokedUrlCommand*)command
@@ -69,7 +76,7 @@ static void soundCompletionCallback(SystemSoundID ssid, void* data);
     NSString* title = [command argumentAtIndex:1];
     NSString* buttons = [command argumentAtIndex:2];
 
-    [self showDialogWithMessage:message title:title buttons:@[buttons] defaultText:nil callbackId:callbackId dialogType:DIALOG_TYPE_ALERT];
+    [self showDialogWithMessage:message title:title buttons:@[buttons] defaultText:nil callbackId:callbackId dialogType:DIALOG_TYPE_ALERT dismissAfter: timeout];
 }
 
 - (void)confirm:(CDVInvokedUrlCommand*)command
@@ -78,8 +85,9 @@ static void soundCompletionCallback(SystemSoundID ssid, void* data);
     NSString* message = [command argumentAtIndex:0];
     NSString* title = [command argumentAtIndex:1];
     NSArray* buttons = [command argumentAtIndex:2];
+    NSTimeInterval timeout = [[command argumentAtIndex:3] doubleValue];
 
-    [self showDialogWithMessage:message title:title buttons:buttons defaultText:nil callbackId:callbackId dialogType:DIALOG_TYPE_ALERT];
+    [self showDialogWithMessage:message title:title buttons:buttons defaultText:nil callbackId:callbackId dialogType:DIALOG_TYPE_ALERT dismissAfter: 0];
 }
 
 - (void)prompt:(CDVInvokedUrlCommand*)command
@@ -90,7 +98,7 @@ static void soundCompletionCallback(SystemSoundID ssid, void* data);
     NSArray* buttons = [command argumentAtIndex:2];
     NSString* defaultText = [command argumentAtIndex:3];
 
-    [self showDialogWithMessage:message title:title buttons:buttons defaultText:defaultText callbackId:callbackId dialogType:DIALOG_TYPE_PROMPT];
+    [self showDialogWithMessage:message title:title buttons:buttons defaultText:defaultText callbackId:callbackId dialogType:DIALOG_TYPE_PROMPT dismissAfter: 0];
 }
 
 /**
@@ -145,6 +153,10 @@ static void soundCompletionCallback(SystemSoundID  ssid, void* data) {
     playBeep([count intValue]);
 }
 
+- (void)dismissAlert:(UIAlertView *)alertView
+{
+    [alertView dismissWithClickedButtonIndex:0 animated:YES];
+}
 
 @end
 
